@@ -1,22 +1,19 @@
 export const nameOption = [
   {
-    lable: "ROOT",
+    label: "ROOT",
     value: "root",
   },
   {
-    lable: "JSAN",
+    label: "JSAN",
     value: "json",
   },
-
   {
-    lable: "KIMO",
+    label: "KIMO",
     value: "Kimo",
   },
-
-  { lable: "JHON", value: "jhon" },
-
+  { label: "JHON", value: "jhon" },
   {
-    lable: "ALEX",
+    label: "ALEX",
     value: "alex",
   },
 ];

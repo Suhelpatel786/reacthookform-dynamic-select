@@ -1,22 +1,26 @@
 import { DevTool } from "@hookform/devtools";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { nameOption, surNameOption } from "../constants";
 
-interface selectProps {
-  data: {
-    name: string;
-    surName: string;
-  }[];
+interface SelectField {
+  name: string;
+  surName: string;
+  nameOptions?: { label: string; value: string }[]; // Make it optional
+}
+
+interface SelectProps {
+  data: SelectField[];
 }
 
 const MainComponent = () => {
-  const form = useForm<selectProps>({
+  const form = useForm<SelectProps>({
     defaultValues: {
       data: [
         {
           name: "",
           surName: "",
+          nameOptions: nameOption,
         },
       ],
     },
@@ -35,14 +39,27 @@ const MainComponent = () => {
   });
 
   //selected names from the option
-  const selectedName: string[] = [];
+  const selectedName: { name: string; surName: string }[] = watch("data", []);
 
-  //const get currentvalues
-  const data = watch(["data"]);
+  console.log({ selectedName });
 
   //handle Submit
   const onSubmit = (data: any) => {
     console.log(data);
+  };
+
+  const handleAddNewField = () => {
+    // filter the name options based on the selected names
+    const filteredNameOptions = nameOption.filter(
+      (option) =>
+        !selectedName.some((selected) => selected.name === option.value)
+    );
+
+    append({
+      name: "",
+      surName: "",
+      nameOptions: filteredNameOptions,
+    });
   };
 
   return (
@@ -53,8 +70,11 @@ const MainComponent = () => {
         </h1>
         <button
           type="button"
-          className="bg-black text-[#feadb9] text-[25px] px-[2rem] py-[1rem] rounded-[10px]"
-          onClick={() => append({ name: "", surName: "" })}
+          className={`bg-black text-[#feadb9] text-[25px] px-[2rem] py-[1rem] rounded-[10px] ${
+            nameOption?.length - 1 === selectedName?.length - 1 && "opacity-50"
+          }`}
+          onClick={handleAddNewField}
+          disabled={nameOption?.length - 1 === selectedName?.length - 1}
         >
           Add Field
         </button>
@@ -81,18 +101,18 @@ const MainComponent = () => {
                     Please Select Your Name
                   </option>
 
-                  {nameOption.map((data, index) => (
+                  {(field.nameOptions || []).map((data: any, index: number) => (
                     <option
                       className="bg-[#8d988d] text-white"
                       key={index}
                       value={data.value}
                     >
-                      {data.lable}
+                      {data.label}
                     </option>
                   ))}
                 </select>
 
-                <p className="text-[#ab4102]">
+                <p className="text-white text-[14px]">
                   {errors?.data?.[index]?.name?.message}
                 </p>
               </div>
@@ -121,7 +141,7 @@ const MainComponent = () => {
                   ))}
                 </select>
 
-                <p className="text-[#ab4102]">
+                <p className="text-white text-[14px]">
                   {errors?.data?.[index]?.surName?.message}
                 </p>
               </div>
