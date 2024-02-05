@@ -35,7 +35,7 @@ Make sure you have Node.js installed on your machine.
 2. Navigate to the project directory:
 
    ```bash
-   yarn install
+   yarn
 
 3. Run the development server:
 
